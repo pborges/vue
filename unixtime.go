@@ -14,7 +14,7 @@ func (t UnixTime) MarshalJSON() ([]byte, error) {
 	return json.Marshal(unixMilli)
 }
 
-func (t UnixTime) UnmarshalJSON(data []byte) error {
+func (t *UnixTime) UnmarshalJSON(data []byte) error {
 	var unixMilli int64
 	if err := json.Unmarshal(data, &unixMilli); err != nil {
 		return err
