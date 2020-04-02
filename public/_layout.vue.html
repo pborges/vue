@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!-- version 1.0 -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+</head>
+
+<body>
+<div id="app">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom" style="height:48px">
+        <span class="navbar-brand">{{title}}</span>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                <li class="nav-item active" v-for="(p,k) in panes">
+                    <a class="nav-link" style="cursor: pointer;" v-on:click="selectedPane=k">
+                        <span>{{p.name}}</span>
+                        <span class="sr-only" v-if="selectedPane==k">(current)</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <alerts :alerts="alerts"></alerts>
+    <div class="container-fluid" style="padding-top: 20px">
+        <component v-bind:is="selectedPane"></component>
+    </div>
+</div>
+<!-- /#app -->
+
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"
+        integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+@{.Components}@
+<script>
+    Vue.mixin({
+        methods: {
+            unix2date(value) {
+                if (value) {
+                    return moment(parseInt(value)).format('YYYY-MM-DD HH:mm:ss.SSS');
+                }
+                return "";
+            },
+            alert: function (message, type, flash) {
+                app.alert(message, type, flash)
+            }
+        }
+    });
+    let app = new Vue({
+        el: '#app',
+        data: {
+            title: "Application",
+            selectedPane: "index",
+            panes: {
+                "index": {
+                    name: "Index",
+                },
+                "tab1": {
+                    name: "Tab 1",
+                },
+                "tab2": {
+                    name: "Tab 2",
+                }
+            },
+            alerts: []
+        },
+        mounted: function () {
+            document.title = this.title;
+        },
+        methods: {
+            alert: function (message, type, flash) {
+                let self = this;
+                if (type === undefined) {
+                    type = 'info';
+                }
+                let alert = {
+                    type: type,
+                    message: message,
+                    clear: function () {
+                        $.each(self.alerts, function (i, a) {
+                            if (a.type === type && a.message === message) {
+                                self.alerts.splice(i, 1);
+                                return false;
+                            }
+                        });
+                    }
+                };
+
+                if (flash !== undefined) {
+                    setTimeout(function () {
+                        alert.clear();
+                    }, flash);
+                }
+                this.alerts.push(alert);
+                return alert;
+            },
+        },
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<div class="card form-group">
+    <div class="card-header" v-if="$links != undefined || $name != undefined || $caption != undefined">
+        <div class="row">
+            <div class="col">
+                <h3>{{$name}}</h3>
+            </div>
+            <div class="col text-right text-nowrap" style="width: 1px">
+                <actions-group :actions="$links"></actions-group>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <span>{{$caption}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="card-body" style="padding: 0">
+        <table class="table table-striped table-sm" style="margin: 0">
+            <thead>
+            <tr>
+                <th v-for="c,idx in $columns" v-bind:style="c.style">
+                    <span class="text-nowrap">
+                        <span class="text-nowrap">{{c.name}}</span>
+                        <i class="fa fa-fw fa-sort" style="cursor: pointer"
+                           v-if="showSortArrow(c,idx,'none')" v-on:click="sortBy(c,idx,true);"></i>
+                        <i class="fa fa-fw fa-sort-up" style="cursor: pointer"
+                           v-if="showSortArrow(c,idx,'asc')" v-on:click="sortBy(c,idx,true);"></i>
+                        <i class="fa fa-fw fa-sort-down" style="cursor: pointer"
+                           v-if="showSortArrow(c,idx,'desc')" v-on:click="sortBy(c,idx,false);"></i>
+                        <i class="fa fa-fw fa-search" style="cursor: pointer"
+                           v-if="showSortArrow(c,idx,'filter')" v-on:click="filterBy(c,idx);"></i>
+                    </span>
+                </th>
+                <th v-if="$actions !== undefined"></th>
+            </tr>
+            <tr v-if="filters.length > 0">
+                <td colspan="$columns.length">
+                    <span v-for="f in filters" class="badge badge-info" style="margin-right: 5px">{{f.name}}:
+                        <input type="text" v-model="f.value"/>
+                        <i v-on:click="removeFilter(f)" class="fa fa-times-circle" style="cursor: pointer;"></i></span>
+                </td>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr v-for="d in filteredAndSortedRows">
+                <td v-for="c in $columns"
+                    v-html="value(c,d).value"
+                    v-bind:class="value(c,d).class"
+                    v-bind:style="value(c,d).style"></td>
+                <td v-if="$actions !== undefined" class="text-right"
+                    style="width: 1px;/*hack to shrink this column to just whats needed*/">
+                    <actions-group :actions="rowActions(d)" :data="d"></actions-group>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+

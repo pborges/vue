@@ -1,0 +1,12 @@
+<div>
+    <div class="row"
+         v-for="(alert,idx) in alerts"
+         style="margin: 0"
+         role="alert"
+         v-bind:class="['alert','alert-' + alert.type]">
+        <div class="col">{{alert.message}}</div>
+        <div class="col text-right">
+            <i class="fas fa-times-circle" style="cursor:pointer" v-on:click="clear(idx)"></i>
+        </div>
+    </div>
+</div>
