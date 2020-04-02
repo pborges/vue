@@ -1,12 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/pborges/vue"
 	"io"
 	"log"
 	"net/http"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 type Server struct {
@@ -79,6 +81,37 @@ func main() {
 		Assets: http.Dir("public"),
 	}
 	http.HandleFunc("/", srv.Index())
+	http.HandleFunc("/data.json", func(w http.ResponseWriter, r *http.Request) {
+		type Row struct {
+			FirstName string       `json:"firstName"`
+			LastName  string       `json:"lastName"`
+			Age       int          `json:"age"`
+			Timestamp vue.UnixTime `json:"timestamp"`
+		}
+		rows := []Row{
+			{
+				FirstName: "Bob",
+				LastName:  "Ross",
+				Age:       32,
+				Timestamp: vue.UnixTime{Timestamp: time.Now()},
+			},
+			{
+				FirstName: "Jim",
+				LastName:  "Jones",
+				Age:       56,
+				Timestamp: vue.UnixTime{Timestamp: time.Now()},
+			},
+			{
+				FirstName: "Paulo",
+				LastName:  "Borges",
+				Age:       29,
+				Timestamp: vue.UnixTime{Timestamp: time.Now()},
+			},
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(rows)
+	})
 
 	panic(http.ListenAndServe(":8080", nil))
 }

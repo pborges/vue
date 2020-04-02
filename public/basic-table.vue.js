@@ -9,30 +9,22 @@ Vue.component('@{.Name}@', {
     },
     computed: {
         $name: function () {
-            if (this.table !== undefined) {
-                return this.table.name;
-            }
-            return this.name;
+            return this.property('name');
         },
         $caption: function () {
-            if (this.table !== undefined) {
-                return this.table.caption;
-            }
-            return this.caption;
+            return this.property('caption');
         },
         $columns: function () {
             let cols = [];
-            let c = this.columns;
-            if (this.table !== undefined) {
-                c = this.table.columns;
-            }
-            $.each(c, function (idx, col) {
+            $.each(this.property('columns'), function (idx, col) {
                 if (typeof col === 'object') {
                     cols.push(col);
                 } else if (typeof col === 'string') {
                     cols.push({
                         name: col, value: function (r) {
-                            return r[col.toLowerCase()];
+                            let n = col.replace(/ /g, '');
+                            n = n.charAt(0).toLowerCase() + n.substring(1);
+                            return r[n];
                         }
                     });
                 }
@@ -40,22 +32,17 @@ Vue.component('@{.Name}@', {
             return cols;
         },
         $rows: function () {
-            if (this.table !== undefined) {
-                return this.table.rows;
+            let rows = this.property('rows');
+            if (typeof rows === "function") {
+                rows = rows();
             }
-            return this.rows;
+            return rows;
         },
         $links: function () {
-            if (this.table !== undefined) {
-                return this.table.links;
-            }
-            return this.links;
+            return this.property('links');
         },
         $actions: function () {
-            if (this.table !== undefined) {
-                return this.table.actions;
-            }
-            return this.actions;
+            return this.property('actions');
         },
         filteredAndSortedRows: function () {
             let self = this;
@@ -106,6 +93,14 @@ Vue.component('@{.Name}@', {
         }
     },
     methods: {
+        property: function (name) {
+            if (this.$props[name] !== undefined) {
+                return this.$props[name];
+            }
+            if (this.table !== undefined && this.table[name] !== undefined) {
+                return this.table[name];
+            }
+        },
         rowActions: function (data) {
             if (typeof this.$actions === 'function') {
                 return this.$actions(data);
