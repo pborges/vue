@@ -61,12 +61,14 @@ func NewComponentFromReaders(name string, html, js io.Reader) (c Component, err 
 	return
 }
 
-const componentTmpl = `<script type="text/javascript">
+const componentTmpl = `
+<script type="text/javascript">
 @{template "js" .}@
 </script>
 <script type="text/x-template" id="@{.TemplateId}@">
 @{template "html" .}@
-</script>`
+</script>
+`
 
 type Component struct {
 	Name string

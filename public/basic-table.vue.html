@@ -34,10 +34,16 @@
                 <th v-if="$actions !== undefined"></th>
             </tr>
             <tr v-if="filters.length > 0">
-                <td colspan="$columns.length">
-                    <span v-for="f in filters" class="badge badge-info" style="margin-right: 5px">{{f.name}}:
-                        <input type="text" v-model="f.value"/>
-                        <i v-on:click="removeFilter(f)" class="fa fa-times-circle" style="cursor: pointer;"></i></span>
+                <td v-bind:colspan="$columns.length">
+                    <div style="display:flex;">
+                        <div style="padding-right:5px">Filters:</div>
+                        <div>
+                            <span v-for="f in filters" class="badge badge-info" style="margin: 2px">
+                                <span>{{f.name}}:</span>
+                                <input type="text" v-model="f.value"/>
+                                <i v-on:click="removeFilter(f)" class="fa fa-times-circle" style="cursor: pointer;"></i></span>
+                        </div>
+                    </div>
                 </td>
             </tr>
             </thead>

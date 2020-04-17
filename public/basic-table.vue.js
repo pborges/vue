@@ -22,6 +22,12 @@ Vue.component('@{.Name}@', {
                 } else if (typeof col === 'string') {
                     cols.push({
                         name: col, value: function (r) {
+			    // try the title
+                            let value = r[col];
+                            if (value !== undefined) {
+                                return value;
+                            }
+                            // try camelcase
                             let n = col.replace(/ /g, '');
                             n = n.charAt(0).toLowerCase() + n.substring(1);
                             return r[n];
@@ -65,7 +71,7 @@ Vue.component('@{.Name}@', {
                     $.each(v, function (idx, f) {
                         let col = self.$columns[f.idx];
                         let val = self.value(col, d).value;
-                        if (val.match(f.value)) {
+                        if (val.toLowerCase().match(f.value.toLowerCase())) {
                             filterMatch = true;
                         }
                     });
