@@ -1,9 +1,7 @@
 <div class="card form-group">
     <div class="card-header" v-if="$links != undefined || $name != undefined || $caption != undefined">
         <div class="row">
-            <div class="col">
-                <h3>{{$name}}</h3>
-            </div>
+            <div class="col" v-html="$name"></div>
             <div class="col text-right text-nowrap" style="width: 1px">
                 <actions-group :actions="$links"></actions-group>
             </div>
@@ -51,9 +49,11 @@
             <tbody>
             <tr v-for="d in filteredAndSortedRows">
                 <td v-for="c in $columns"
-                    v-html="value(c,d).value"
                     v-bind:class="value(c,d).class"
-                    v-bind:style="value(c,d).style"></td>
+                    v-bind:style="value(c,d).style">
+		    <div v-if="value(c,d).value !== undefined" v-html="value(c,d).value"></div>
+                    <actions-group v-if="value(c,d).actions !== undefined" :actions="value(c,d).actions" :data="d"></actions-group>
+		</td>
                 <td v-if="$actions !== undefined" class="text-right"
                     style="width: 1px;/*hack to shrink this column to just whats needed*/">
                     <actions-group :actions="rowActions(d)" :data="d"></actions-group>

@@ -71,7 +71,12 @@ Vue.component('@{.Name}@', {
                     $.each(v, function (idx, f) {
                         let col = self.$columns[f.idx];
                         let val = self.value(col, d).value;
-                        if (val.toLowerCase().match(f.value.toLowerCase())) {
+			let value = val.value;
+                        if (val.sort !== undefined) {
+                            value = val.sort;
+                        }
+
+                        if (value.toLowerCase().match(f.value.toLowerCase())) {
                             filterMatch = true;
                         }
                     });
@@ -90,10 +95,22 @@ Vue.component('@{.Name}@', {
                     return 0;
                 }
                 let col = self.$columns[self.sort];
-                if (self.value(col, a).value < self.value(col, b).value)
+
+		let valueA = self.value(col, a);
+                if (valueA.sort !== undefined) {
+                    valueA.value = valueA.sort
+                }
+
+                let valueB = self.value(col, a);
+                if (valueB.sort !== undefined) {
+                    valueB.value = valueB.sort
+                }
+
+                if (valueA < self.value(col, b).value)
                     return returnValue;
-                if (self.value(col, a).value > self.value(col, b).value)
+                if (valueB > self.value(col, b).value)
                     return returnValue * -1;
+
                 return 0;
             });
         }

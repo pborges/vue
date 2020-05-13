@@ -5,12 +5,12 @@
                 v-if="a.dropdown === undefined || a.dropdown.length == 0"
                 v-bind:class="classForAction(a)">
             <i v-if="a.icon !== undefined" v-bind:class="a.icon"></i>
-            <span v-if="a.name !== undefined">{{a.name}}</span>
+	    <span v-if="a.name !== undefined" v-html="a.name"></span>
         </button>
         <div class="dropdown" v-if="a.dropdown !== undefined && a.dropdown.length > 0">
             <button v-bind:class="classForAction(a)" type="button" data-toggle="dropdown">
                 <i v-if="a.icon !== undefined" v-bind:class="a.icon"></i>
-                <span v-if="a.name !== undefined">{{a.name}}</span>
+		<span v-if="a.name !== undefined" v-html="a.name"></span>
             </button>
             <div class="dropdown-menu">
                 <a class="dropdown-item" style="cursor: pointer"
